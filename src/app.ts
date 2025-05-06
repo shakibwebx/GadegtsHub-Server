@@ -21,7 +21,7 @@ app.use(
 // App Api Routes
 app.use('/api', router);
 app.get('/', (req: Request, res: Response) => {
-  res.send('Medi-Sphere App Is Running');
+  res.send('Gadgets App Is Running');
 });
 
 app.use(globalErrorHandler);
