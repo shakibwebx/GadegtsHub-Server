@@ -22,7 +22,7 @@ const auth = (...requiredRoles: string[]) => {
     ) as JwtPayload;
 
     const { role, email, iat } = decoded;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }) as { _id: string; name: string; email: string; role: string } | null;
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
     }
@@ -38,7 +38,7 @@ const auth = (...requiredRoles: string[]) => {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role,
+      role: user.role as 'user' | 'admin',
     };
     next();
   });
