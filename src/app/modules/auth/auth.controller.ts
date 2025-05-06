@@ -8,7 +8,7 @@ const randomPass = Math.ceil(Math.random() * 1000000);
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, role } = req.body;
+    const { name, email, role, address, Phone } = req.body;
 
     const password = req.body.password || randomPass;
 
@@ -25,6 +25,8 @@ export const registerUser = async (req: Request, res: Response) => {
       email,
       role,
       password,
+      Phone,
+      address,
     });
 
     // Save user to database
