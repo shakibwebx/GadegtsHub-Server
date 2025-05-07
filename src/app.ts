@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://gadgets-hub-topaz.vercel.app/',
+      'https://gadgets-hub-topaz.vercel.app',
       'http://localhost:3001',
     ],
     credentials: true,
