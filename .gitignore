@@ -3,3 +3,6 @@ node_modules
 .env
 .vercel
 .env.local
+
+# Allow .env.example to be committed
+!.env.example
