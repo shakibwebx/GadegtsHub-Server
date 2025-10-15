@@ -2,15 +2,15 @@
 // modules/stocks/stock.route.ts
 
 import { Router } from 'express';
-import { Medicine } from '../medicine/medicine.model'; // Correct import path for your Medicine model
+import { Product } from '../products/product.model';
 
 const router = Router();
 
 // GET /api/stocks
 router.get('/', async (req, res) => {
   try {
-    // Fetch the total stock (sum of all quantities of medicines)
-    const totalStockAggregation = await Medicine.aggregate([
+    // Fetch the total stock (sum of all quantities of products)
+    const totalStockAggregation = await Product.aggregate([
       {
         $group: {
           _id: null,
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
     ]);
 
     // Count how many low-stock items are there (quantity < 10)
-    const lowStockItems = await Medicine.countDocuments({
+    const lowStockItems = await Product.countDocuments({
       quantity: { $lt: 10 },
     });
 

@@ -8,6 +8,7 @@ export interface IUser extends Document {
   password: string;
   phone?: string;
   address?: string;
+  image?: string;
   method: 'credentials' | 'github' | 'google';
   role: 'user' | 'admin';
 }
@@ -19,6 +20,7 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, required: true, minlength: 6 },
     phone: { type: String, trim: true },
     address: { type: String, trim: true },
+    image: { type: String, trim: true },
     method: {
       type: String,
       enum: ['credentials', 'github', 'google'],

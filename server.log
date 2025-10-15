@@ -1,0 +1,10 @@
+
+> medi-sphere@1.0.0 dev
+> ts-node-dev --respawn --transpile-only src/server.ts
+
+[INFO] 01:41:02 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.7.2)
+Gadgets app listening on port 5001
+Payment Success - Query: { tran_id: 'test123' }
+Payment Success - Body: {}
+Payment Success - Extracted: { tran_id: 'test123', status: undefined }
+Order not found for ID: test123

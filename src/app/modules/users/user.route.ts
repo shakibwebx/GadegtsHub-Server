@@ -7,12 +7,13 @@ import {
   getAllUsers,
 } from './user.controller';
 import auth from '../../middlewares/auth';
+import { upload } from '../../config/cloudinary.config';
 
 const userRouter = express.Router();
 
 userRouter.get('/', auth('admin'), getAllUsers);
 userRouter.get('/email/:email', getUserByEmail);
-userRouter.patch('/:id', updateUser);
+userRouter.patch('/:id', upload.single('image'), updateUser);
 userRouter.get('/:id', getSingleUser);
 userRouter.get('/me', auth('user', 'admin'), getCurrentUser);
 

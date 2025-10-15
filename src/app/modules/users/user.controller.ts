@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../auth/auth.model';
+import bcrypt from 'bcrypt';
+import { v2 as cloudinary } from 'cloudinary';
 
 // Get all users
 export const getAllUsers = async (
@@ -39,14 +41,42 @@ export const updateUser = async (
   next: NextFunction,
 ): Promise<void> => {
   const { id } = req.params;
-  const { name, email, phone } = req.body;
+  const { name, phone, address, password } = req.body;
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { name, email, phone },
-      { new: true },
-    );
+    // Find the user first
+    const user = await User.findById(id);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+
+    // Prepare update data
+    const updateData: any = {};
+
+    if (name) updateData.name = name;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+
+    // Hash password if provided
+    if (password) {
+      const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
+      updateData.password = await bcrypt.hash(password, saltRounds);
+    }
+
+    // Handle image upload if file exists
+    if (req.file) {
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'user_profiles',
+      });
+      updateData.image = result.secure_url;
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedUser) {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');

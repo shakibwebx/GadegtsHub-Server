@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const MedicineTypeEnum = z.enum([
+const ProductTypeEnum = z.enum([
   'Smartwatch',
   'Smartphone',
   'Laptop',
@@ -9,7 +9,7 @@ const MedicineTypeEnum = z.enum([
   'Camera',
 ]);
 
-const MedicineCategoryEnum = z.enum([
+const ProductCategoryEnum = z.enum([
   'Watch',
   'Phone',
   'Macbook',
@@ -21,21 +21,21 @@ const MedicineCategoryEnum = z.enum([
   'monitor',
 ]);
 
-const createMedicineZodSchemaValidation = z.object({
-  name: z.string().min(1, 'Medicine name is required'),
+const createProductZodSchemaValidation = z.object({
+  name: z.string().min(1, 'Product name is required'),
   description: z.string().optional(),
   price: z.number().nonnegative('Price cannot be negative'),
   quantity: z.number().nonnegative('Quantity cannot be negative'),
   requiredPrescription: z.boolean(),
   manufacturer: z.string().min(1, 'Manufacturer is required'),
   expiryDate: z.coerce.date(),
-  type: MedicineTypeEnum,
+  type: ProductTypeEnum,
   categories: z
-    .array(MedicineCategoryEnum)
+    .array(ProductCategoryEnum)
     .nonempty('At least one category is required'),
   symptoms: z.array(z.string()).optional(),
   discount: z.number().nonnegative().optional().default(0),
-  imageUrl: z.string().url('Must be a valid image URL').optional(),
+  imageUrl: z.string().optional(),
   supplier: z.string().optional(),
   inStock: z.boolean(),
   isDeleted: z.boolean().optional(),
@@ -43,7 +43,7 @@ const createMedicineZodSchemaValidation = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-const updateMedicineZodSchemaValidation = z.object({
+const updateProductZodSchemaValidation = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional(),
   price: z.number().nonnegative().optional(),
@@ -51,11 +51,11 @@ const updateMedicineZodSchemaValidation = z.object({
   requiredPrescription: z.boolean().optional(),
   manufacturer: z.string().min(1).optional(),
   expiryDate: z.coerce.date().optional(),
-  type: MedicineTypeEnum.optional(),
-  categories: z.array(MedicineCategoryEnum).optional(),
+  type: ProductTypeEnum.optional(),
+  categories: z.array(ProductCategoryEnum).optional(),
   symptoms: z.array(z.string()).optional(),
   discount: z.number().nonnegative().optional(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().optional(),
   supplier: z.string().optional(),
   inStock: z.boolean().optional(),
   isDeleted: z.boolean().optional(),
@@ -63,7 +63,7 @@ const updateMedicineZodSchemaValidation = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-export const medicineValidation = {
-  createMedicineZodSchemaValidation,
-  updateMedicineZodSchemaValidation,
+export const productValidation = {
+  createProductZodSchemaValidation,
+  updateProductZodSchemaValidation,
 };

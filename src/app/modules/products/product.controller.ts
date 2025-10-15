@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { medicineServices } from './medicine.service';
+import { productServices } from './product.service';
 import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 import httpStatus from 'http-status';
-import { MedicineCategory, MedicineType } from './medicine.interface';
+import { ProductCategory, ProductType } from './product.interface';
 
-const createMedicine = catchAsync(
+const createProduct = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     // add cloudinary url to body if file exists
@@ -13,18 +13,18 @@ const createMedicine = catchAsync(
       req.body.imageUrl = req.file.path;
     }
 
-    const result = await medicineServices.createMedicineIntoDB(req.body);
+    const result = await productServices.createProductIntoDB(req.body);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Medicine is created successfully!',
+      message: 'Product is created successfully!',
       data: result,
     });
   },
 );
 
-// get all medicines | search and filter medicine
-const getAllMedicines = catchAsync(async (req: Request, res: Response) => {
+// get all products | search and filter products
+const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   const {
     searchTerm,
     tags,
@@ -40,9 +40,9 @@ const getAllMedicines = catchAsync(async (req: Request, res: Response) => {
     sortBy,
     sortOrder,
   } = req.query;
-  
 
-  const result = await medicineServices.getAllMedicinesFromDB(
+
+  const result = await productServices.getAllProductsFromDB(
     searchTerm as string,
     tags ? ((Array.isArray(tags) ? tags : [tags]) as string[]) : undefined,
     symptoms
@@ -54,11 +54,11 @@ const getAllMedicines = catchAsync(async (req: Request, res: Response) => {
       : undefined,
     minPrice ? parseFloat(minPrice as string) : undefined,
     maxPrice ? parseFloat(maxPrice as string) : undefined,
-    type as MedicineType,
+    type as ProductType,
     categories
       ? ((Array.isArray(categories)
           ? categories
-          : [categories]) as MedicineCategory[])
+          : [categories]) as ProductCategory[])
       : undefined,
     page ? parseInt(page as string) : undefined,
     limit ? parseInt(limit as string) : undefined,
@@ -69,37 +69,25 @@ const getAllMedicines = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Medicines retrieved successfully!',
+    message: 'Products retrieved successfully!',
     data: result,
   });
 });
 
-// get a single medicine
-const getSingleMedicine = catchAsync(async (req: Request, res: Response) => {
+// get a single product
+const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await medicineServices.getSingleMedicinesFromDB(id);
+  const result = await productServices.getSingleProductFromDB(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Medicine retrieved successfully!',
+    message: 'Product retrieved successfully!',
     data: result,
   });
 });
 
-// update a single medicine
-// const updateMedicine = catchAsync(async (req: Request, res: Response) => {
-//   const id = req.params.id;
-//   const body = req.body;
-//   const result = await medicineServices.updateMedicineIntoDB(id, body);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Medicine updated successfully!',
-//     data: result,
-//   });
-// });
-const updateMedicine = catchAsync(async (req: Request, res: Response) => {
+// update a single product
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const body = req.body;
 
@@ -108,33 +96,33 @@ const updateMedicine = catchAsync(async (req: Request, res: Response) => {
     body.imageUrl = req.file.path;
   }
 
-  const result = await medicineServices.updateMedicineIntoDB(id, body);
+  const result = await productServices.updateProductIntoDB(id, body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Medicine updated successfully!',
+    message: 'Product updated successfully!',
     data: result,
   });
 });
 
-// delete a medicine
-const deleteMedicine = catchAsync(async (req: Request, res: Response) => {
+// delete a product
+const deleteProduct = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await medicineServices.deleteMedicineFromDB(id);
+  const result = await productServices.deleteProductFromDB(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Medicine Deleted successfully!',
+    message: 'Product Deleted successfully!',
     data: result,
   });
 });
 
 
-export const medicineControllers = {
-  createMedicine,
-  getAllMedicines,
-  getSingleMedicine,
-  updateMedicine,
-  deleteMedicine,
+export const productControllers = {
+  createProduct,
+  getAllProducts,
+  getSingleProduct,
+  updateProduct,
+  deleteProduct,
 };

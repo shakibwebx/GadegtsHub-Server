@@ -1,11 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
-import { IMedicine } from './medicine.interface';
+import { IProduct } from './product.interface';
 
-const medicineSchema: Schema = new Schema<IMedicine>(
+const productSchema: Schema = new Schema<IProduct>(
   {
     name: {
       type: String,
-      required: [true, 'Medicine name is required'],
+      required: [true, 'Product name is required'],
       trim: true,
     },
     description: {
@@ -35,7 +35,7 @@ const medicineSchema: Schema = new Schema<IMedicine>(
     },
     type: {
       type: String,
-      required: [true, 'Medicine type is required'],
+      required: [true, 'Product type is required'],
       enum: ['Smartwatch', 'Smartphone', 'Laptop', 'PC', 'Airbuds', 'Camera'],
     },
     categories: {
@@ -86,17 +86,17 @@ const medicineSchema: Schema = new Schema<IMedicine>(
 
 // soft delete
 // filter out deleted documents
-medicineSchema.pre('find', function (next) {
+productSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-medicineSchema.pre('findOne', function (next) {
+productSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-medicineSchema.pre('aggregate', function (next) {
+productSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
@@ -104,4 +104,4 @@ medicineSchema.pre('aggregate', function (next) {
 //checking if a product is already exist!
 //
 
-export const Medicine = mongoose.model<IMedicine>('Medicine', medicineSchema);
+export const Product = mongoose.model<IProduct>('Product', productSchema);

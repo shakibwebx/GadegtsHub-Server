@@ -16,5 +16,14 @@ export default {
     sp_prefix: process.env.SP_PREFIX,
     sp_return_url: process.env.SP_RETURN_URL,
   },
+  ssl: {
+    store_id: process.env.SSL_STORE_ID,
+    store_password: process.env.SSL_STORE_PASSWORD,
+    is_live: process.env.SSL_IS_LIVE === 'true',
+    success_url: process.env.SSL_SUCCESS_URL,
+    fail_url: process.env.SSL_FAIL_URL,
+    cancel_url: process.env.SSL_CANCEL_URL,
+    ipn_url: process.env.SSL_IPN_URL,
+  },
 };
 

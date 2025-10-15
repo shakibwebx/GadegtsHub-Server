@@ -1,16 +1,16 @@
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import {
-  IMedicine,
-  MedicineCategory,
-  MedicineType,
-} from './medicine.interface';
-import { Medicine } from './medicine.model';
+  IProduct,
+  ProductCategory,
+  ProductType,
+} from './product.interface';
+import { Product } from './product.model';
 import { FilterQuery } from 'mongoose';
 
-// create a medicine into db
-const createMedicineIntoDB = async (payload: IMedicine) => {
-  const exists = await Medicine.findOne({
+// create a product into db
+const createProductIntoDB = async (payload: IProduct) => {
+  const exists = await Product.findOne({
     name: payload.name,
     manufacturer: payload.manufacturer,
     type: payload.type,
@@ -20,15 +20,15 @@ const createMedicineIntoDB = async (payload: IMedicine) => {
   });
 
   if (exists) {
-    throw new AppError(httpStatus.CONFLICT, 'This medicine already exists!');
+    throw new AppError(httpStatus.CONFLICT, 'This product already exists!');
   }
 
-  const result = await Medicine.create(payload);
+  const result = await Product.create(payload);
   return result;
 };
 
-// get all medicines from db
-const getAllMedicinesFromDB = async (
+// get all products from db
+const getAllProductsFromDB = async (
   searchTerm?: string,
   tags?: string[],
   symptoms?: string[],
@@ -36,14 +36,14 @@ const getAllMedicinesFromDB = async (
   requiredPrescription?: boolean,
   minPrice?: number,
   maxPrice?: number,
-  type?: MedicineType,
-  categories?: MedicineCategory[],
+  type?: ProductType,
+  categories?: ProductCategory[],
   page: number = 1,
   limit: number = 10,
   sortBy: string = 'createdAt',
   sortOrder: 'asc' | 'desc' = 'desc',
 ) => {
-  const filter: FilterQuery<IMedicine> = { isDeleted: false };
+  const filter: FilterQuery<IProduct> = { isDeleted: false };
 
   // searchTerm
   if (searchTerm) {
@@ -90,15 +90,15 @@ const getAllMedicinesFromDB = async (
   const sortOptions: Record<string, 1 | -1> = {};
   sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-  const medicines = await Medicine.find(filter)
+  const products = await Product.find(filter)
     .sort(sortOptions)
     .skip(skip)
     .limit(limit);
 
-  const total = await Medicine.countDocuments(filter);
+  const total = await Product.countDocuments(filter);
 
   return {
-    data: medicines,
+    data: products,
     meta: {
       total,
       page,
@@ -107,53 +107,53 @@ const getAllMedicinesFromDB = async (
   };
 };
 
-// get a single medicines from db
-const getSingleMedicinesFromDB = async (id: string) => {
-  const result = await Medicine.findById(id);
+// get a single product from db
+const getSingleProductFromDB = async (id: string) => {
+  const result = await Product.findById(id);
 
   if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Medicine not found!');
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found!');
   }
 
   return result;
 };
 
-// update medicine
-const updateMedicineIntoDB = async (
+// update product
+const updateProductIntoDB = async (
   id: string,
-  payload: Partial<IMedicine>,
+  payload: Partial<IProduct>,
 ) => {
-  const result = await Medicine.findByIdAndUpdate(id, payload, {
+  const result = await Product.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   });
 
   if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Medicine not found!');
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found!');
   }
 
   return result;
 };
 
 // soft delete
-const deleteMedicineFromDB = async (id: string) => {
-  const deletedMedicine = await Medicine.findByIdAndUpdate(
+const deleteProductFromDB = async (id: string) => {
+  const deletedProduct = await Product.findByIdAndUpdate(
     id,
     { isDeleted: true },
     { new: true },
   );
 
-  if (!deletedMedicine) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Medicine');
+  if (!deletedProduct) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Product');
   }
 
-  return deletedMedicine;
+  return deletedProduct;
 };
 
-export const medicineServices = {
-  createMedicineIntoDB,
-  getAllMedicinesFromDB,
-  getSingleMedicinesFromDB,
-  updateMedicineIntoDB,
-  deleteMedicineFromDB,
+export const productServices = {
+  createProductIntoDB,
+  getAllProductsFromDB,
+  getSingleProductFromDB,
+  updateProductIntoDB,
+  deleteProductFromDB,
 };

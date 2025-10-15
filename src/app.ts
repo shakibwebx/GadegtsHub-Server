@@ -7,6 +7,7 @@ const app: Application = Express();
 
 //parser
 app.use(Express.json());
+app.use(Express.urlencoded({ extended: true })); // For parsing form data from SSLCommerz
 app.use(
   cors({
     origin: [
