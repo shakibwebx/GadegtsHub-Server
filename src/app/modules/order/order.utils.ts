@@ -89,10 +89,10 @@ const makePaymentAsync = async (
     ship_country: 'Bangladesh',
   };
 
-  const response: SSLCommerzResponse = await sslcommerz.init(data);
+  const response = await sslcommerz.init(data);
 
-  if (response.status !== 'SUCCESS') {
-    throw new Error(response.failedreason || 'Payment initiation failed');
+  if (!response.GatewayPageURL) {
+    throw new Error('Payment initiation failed');
   }
 
   return {
@@ -109,7 +109,7 @@ const verifyPaymentAsync = async (
     val_id: tran_id,
   });
 
-  return [response as VerificationResponse];
+  return [response as any as VerificationResponse];
 };
 
 export const orderUtils = {
